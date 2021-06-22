@@ -1,24 +1,28 @@
 package br.com.zupacademy.lincon.transacao.consultatransacao;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.List;
+import java.util.UUID;
 
+@Entity
 public class Cartao {
+  @Id
   @JsonProperty
   private String id;
   @JsonProperty
   private String email;
-  @JsonProperty("EfetivadaEm")
-  private String efetivadaEm;
+  @OneToMany(mappedBy = "cartao")
+  private List<EventoDeTransacao> transacoes;
+
 
   @Override
   public String toString() {
     return "Cartao{" +
-        "id='" + id + '\'' +
+        "id=" + id +
         ", email='" + email + '\'' +
-        ", efetivadaEm='" + efetivadaEm + '\'' +
+        ", transacoes=" + transacoes +
         '}';
   }
 }

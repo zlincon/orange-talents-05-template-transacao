@@ -1,23 +1,29 @@
 package br.com.zupacademy.lincon.transacao.consultatransacao;
 
-import org.springframework.kafka.annotation.EnableKafka;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.kafka.listener.ConsumerSeekAware;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Optional;
-
 @Component
 public class ListenerDeTransacao implements ConsumerSeekAware {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ListenerDeTransacao.class);
+  @Autowired
+  private EventoDeTransacaoRepository repository;
+
   @KafkaListener(topics = "${spring.kafka.topic.transactions}",
       topicPartitions = @TopicPartition(topic = "transacoes", partitionOffsets =
-      @PartitionOffset(partition = "0", initialOffset = "0")))
+      @PartitionOffset(partition = "0", initialOffset = "0"))
+  )
+
   public void ouvir(EventoDeTransacao eventoDeTransacao) {
-    System.out.println(eventoDeTransacao.toString());
+    repository.save(eventoDeTransacao);
+    LOG.info("received data='{}'", eventoDeTransacao);
   }
 
 //  @Override
